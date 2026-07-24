@@ -1,0 +1,492 @@
+{
+  "name": "AI YouTube Automation",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "9fcb2f58-6233-4b5b-9990-820828656dbc",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_GROQ_API_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"llama-3.3-70b-versatile\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are an expert YouTube Shorts content creator. Always return ONLY valid JSON. Never use markdown, never wrap the JSON in ```json fences, and never add explanations.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Create a highly engaging 60-second YouTube Shorts video.\\n\\nIMPORTANT RULES:\\n\\n- Every response MUST be about a completely NEW topic.\\n- Never repeat or closely resemble previous topics.\\n- Randomly choose ONE fascinating topic from a wide variety of educational categories.\\n- The topic should be family-friendly, factually accurate, engaging, and suitable for YouTube Shorts.\\n\\nPossible categories include:\\n\\nSpace, Astronomy, NASA, ISRO, Ancient History, Lost Civilizations, Archaeology, World History, Geography, Countries, Oceans, Mountains, Volcanoes, Weather, Climate, Biology, Human Body, Medicine, Psychology, Chemistry, Physics, Mathematics, Artificial Intelligence, Robotics, Programming, Cybersecurity, Internet History, Engineering, Architecture, Inventions, Famous Scientists, Famous Inventors, Rare Animals, Birds, Marine Life, Plants, Insects, Dinosaurs, Mythology, Ancient Weapons, Military Technology, Aviation, Ships, Trains, Cars, Food Science, Sleep, Dreams, Optical Illusions, World Records, Rare Places, Islands, Natural Wonders, Economics, Money Facts, Languages, Cultures, Festivals, Everyday Science, and 'Did You Know?' facts.\\n\\nDo NOT repeatedly choose popular topics like glowing waves, bioluminescence, Bermuda Triangle, pyramids, black holes, dinosaurs, or sharks unless randomly selected after many different topics.\\n\\nRequirements:\\n- Begin with a powerful hook.\\n- Create exactly 8 scenes.\\n- Each voiceover should be between 10 and 20 words.\\n- Each image_prompt should be highly detailed, cinematic, photorealistic, visually stunning, and optimized for AI image generation.\\n- Make the narration exciting, educational, and curiosity-driven.\\n- End with an interesting conclusion or surprising fact.\\n\\nReturn ONLY valid JSON in exactly this format:\\n\\n{\\n  \\\"title\\\": \\\"SEO optimized YouTube title under 80 characters\\\",\\n  \\\"description\\\": \\\"A 200-300 word SEO-friendly YouTube description ending with relevant hashtags.\\\",\\n  \\\"tags\\\": [\\n    \\\"tag1\\\",\\n    \\\"tag2\\\",\\n    \\\"tag3\\\",\\n    \\\"tag4\\\",\\n    \\\"tag5\\\",\\n    \\\"tag6\\\",\\n    \\\"tag7\\\",\\n    \\\"tag8\\\",\\n    \\\"tag9\\\",\\n    \\\"tag10\\\"\\n  ],\\n  \\\"thumbnail_text\\\": \\\"3-5 word catchy thumbnail text\\\",\\n  \\\"scenes\\\": [\\n    {\\n      \\\"image_prompt\\\": \\\"Highly detailed cinematic AI image prompt\\\",\\n      \\\"voiceover\\\": \\\"Narration for scene 1\\\"\\n    },\\n    {\\n      \\\"image_prompt\\\": \\\"Highly detailed cinematic AI image prompt\\\",\\n      \\\"voiceover\\\": \\\"Narration for scene 2\\\"\\n    },\\n    {\\n      \\\"image_prompt\\\": \\\"Highly detailed cinematic AI image prompt\\\",\\n      \\\"voiceover\\\": \\\"Narration for scene 3\\\"\\n    },\\n    {\\n      \\\"image_prompt\\\": \\\"Highly detailed cinematic AI image prompt\\\",\\n      \\\"voiceover\\\": \\\"Narration for scene 4\\\"\\n    },\\n    {\\n      \\\"image_prompt\\\": \\\"Highly detailed cinematic AI image prompt\\\",\\n      \\\"voiceover\\\": \\\"Narration for scene 5\\\"\\n    },\\n    {\\n      \\\"image_prompt\\\": \\\"Highly detailed cinematic AI image prompt\\\",\\n      \\\"voiceover\\\": \\\"Narration for scene 6\\\"\\n    },\\n    {\\n      \\\"image_prompt\\\": \\\"Highly detailed cinematic AI image prompt\\\",\\n      \\\"voiceover\\\": \\\"Narration for scene 7\\\"\\n    },\\n    {\\n      \\\"image_prompt\\\": \\\"Highly detailed cinematic AI image prompt\\\",\\n      \\\"voiceover\\\": \\\"Narration for scene 8\\\"\\n    }\\n  ]}\"\n    }\n  ],\n  \"temperature\": 1.2,\n  \"top_p\": 0.95,\n  \"frequency_penalty\": 0.8,\n  \"presence_penalty\": 1.0,\n  \"max_tokens\": 4096\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "3f5ad011-ba43-40f8-98a6-090e98ed2388",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "scenes",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        624,
+        0
+      ],
+      "id": "19da88f2-fac1-4713-9633-132316ea14b2",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloudflare.com/client/v4/accounts/d713b5c48ba57d69c8829790cd90059e/ai/run/@cf/black-forest-labs/flux-1-schnell",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_CLOUDFLARE_API_TOKEN"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"prompt\": \"={{$json.image_prompt}}\",\n  \"width\": 1280,\n  \"height\": 720,\n  \"steps\": 4\n}",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 10000
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1168,
+        144
+      ],
+      "id": "fa167da9-14bf-49b6-a292-949f3fec9907",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "result.image",
+        "binaryPropertyName": "image",
+        "options": {
+          "fileName": "=scene_{{$json.scene}}.jpg",
+          "mimeType": "image/jpeg"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1584,
+        176
+      ],
+      "id": "00d7ea29-c9fa-4286-9491-77d678633b2a",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "return {\n  json: {\n    scene: $itemIndex + 1,\n    image_prompt: $json.image_prompt,\n    voiceover: $json.voiceover,\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        144
+      ],
+      "id": "484fdb09-c6bf-4336-98ed-9309521431b8",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1312,
+        16
+      ],
+      "id": "d52b015e-fba1-4536-95f6-269248876f4f",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.elevenlabs.io/v1/text-to-speech/CwhRBWXzGAHq8TQ4Fs17",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "xi-api-key",
+              "value": "YOUR_ELEVENLABS_API_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"text\": \"={{$json.voiceover}}\",\n  \"model_id\": \"eleven_multilingual_v2\",\n  \"voice_settings\": {\n    \"stability\": 0.5,\n    \"similarity_boost\": 0.8\n  }\n}",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 3000
+            }
+          },
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "audio"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2176,
+        64
+      ],
+      "id": "b1b4070d-7599-440b-ba81-9e49c8adbc75",
+      "name": "elevenlabs"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8000/scene",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "scene",
+              "value": "={{$json.scene}}"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "image",
+              "inputDataFieldName": "image"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "audio",
+              "inputDataFieldName": "audio"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2784,
+        -112
+      ],
+      "id": "11f991cd-cbdf-4114-b0ab-8d0d79c58fac",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2512,
+        -112
+      ],
+      "id": "c4869371-7033-4c93-a3e1-7b78841583d4",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1856,
+        64
+      ],
+      "id": "e72b6278-608f-4955-a2a1-d91f961e6ecf",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "operation": "upload",
+        "title": "={{$node[\"Parse Script\"].json.title}}",
+        "regionCode": "IN",
+        "categoryId": "27",
+        "options": {
+          "description": "={{$node[\"Parse Script\"].json.description}}",
+          "tags": "={{$node[\"Parse Script\"].json.tags.join(\",\")}}"
+        }
+      },
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        3328,
+        -112
+      ],
+      "id": "d7c031cc-048a-452a-ad82-21d1da948f72",
+      "name": "Upload a video",
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": "COC2vCRqHk1Fjxjb",
+          "name": "YouTube account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let response = $json.choices[0].message.content;\n\n// Remove markdown if Groq accidentally returns it\nresponse = response.replace(/^```json\\s*/i, \"\");\nresponse = response.replace(/^```\\s*/i, \"\");\nresponse = response.replace(/\\s*```$/i, \"\");\nresponse = response.trim();\n\n// Parse JSON\nconst data = JSON.parse(response);\n\n// Default values\ndata.description = data.description || \"\";\ndata.tags = data.tags || [];\ndata.thumbnail_text = data.thumbnail_text || \"\";\n\n// Add scene numbers\nif (data.scenes && Array.isArray(data.scenes)) {\n    data.scenes.forEach((scene, index) => {\n        scene.scene = index + 1;\n    });\n}\n\nreturn [\n    {\n        json: data\n    }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "faf48443-0732-468d-af3f-53220c313097",
+      "name": "Parse Script"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8000/render",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        3056,
+        -112
+      ],
+      "id": "3103e1c0-d3d6-416b-bb83-22685aee5527",
+      "name": "HTTP Request3",
+      "executeOnce": true
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Parse Script",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "elevenlabs": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "elevenlabs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Script": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "Upload a video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "45ffa8e3-0612-4056-aadd-f7caf181c190",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "53dad21ecc2690565f59a757bee6f4b6e7e413b57149dc5421cc1d25d216b26a"
+  },
+  "nodeGroups": [],
+  "id": "DDZtDAbQACCEcEt7",
+  "tags": []
+}
